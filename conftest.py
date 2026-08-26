@@ -6,7 +6,7 @@ from lib.logging_config import configure_logging
 
 
 def pytest_configure(config: pytest.Config) -> None:
-	configure_logging()
+	configure_logging(config.getoption("--log-level"))
 
 
 @pytest.fixture(scope="session")

@@ -8,6 +8,7 @@ DEFAULT_LOG_DIRECTORY = Path("logs")
 LOG_FORMAT = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 FILE_HANDLER_NAME = "pytest_automation_file"
+LOG_LEVELS = ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL")
 
 
 def _get_log_file() -> Path:
@@ -19,7 +20,7 @@ def _get_log_file() -> Path:
     return DEFAULT_LOG_DIRECTORY / f"test_{run_id}_{os.getpid()}.log"
 
 
-def configure_logging() -> Path:
+def configure_logging(log_level: str | None = None) -> Path:
     """Configure one rotating file handler for the test run."""
     log_file = _get_log_file()
     if not log_file.is_absolute():
@@ -27,7 +28,10 @@ def configure_logging() -> Path:
     log_file.parent.mkdir(parents=True, exist_ok=True)
 
     root_logger = logging.getLogger()
-    root_logger.setLevel(os.getenv("LOG_LEVEL", "INFO").upper())
+    selected_level = (log_level or os.getenv("LOG_LEVEL", "INFO")).upper()
+    if selected_level not in LOG_LEVELS:
+        raise ValueError(f"Unsupported log level: {selected_level}")
+    root_logger.setLevel(selected_level.upper())
 
     if any(getattr(handler, "name", None) == FILE_HANDLER_NAME for handler in root_logger.handlers):
         return log_file
