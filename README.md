@@ -55,11 +55,18 @@ $env:LOG_LEVEL = "DEBUG"
 python -m pytest
 ```
 
+You can override the level for one run from the command line. Accepted values
+are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`:
+
+```powershell
+python -m pytest --log-level DEBUG
+```
+
 ## Logging
 
 Each test run writes logs to a separate timestamped file under `logs/`. Files are
 rotated at 5 MB and up to three backup files are retained. To use a specific
-file instead, configure the destination and minimum level with:
+file or default level, configure the destination and minimum level with:
 
 ```powershell
 $env:LOG_FILE = "artifacts\api-tests.log"
