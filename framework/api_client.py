@@ -1,11 +1,11 @@
-import logging
 from typing import Any
 
 import requests
 
 from framework.config import Settings
+from lib.logger import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class ApiClient:

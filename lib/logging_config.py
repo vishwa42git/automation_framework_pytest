@@ -1,17 +1,27 @@
 import logging
 import os
+from datetime import datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-DEFAULT_LOG_FILE = Path("logs") / "test.log"
+DEFAULT_LOG_DIRECTORY = Path("logs")
 LOG_FORMAT = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 FILE_HANDLER_NAME = "pytest_automation_file"
 
 
+def _get_log_file() -> Path:
+    configured_log_file = os.getenv("LOG_FILE")
+    if configured_log_file:
+        return Path(configured_log_file)
+
+    run_id = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    return DEFAULT_LOG_DIRECTORY / f"test_{run_id}_{os.getpid()}.log"
+
+
 def configure_logging() -> Path:
     """Configure one rotating file handler for the test run."""
-    log_file = Path(os.getenv("LOG_FILE", str(DEFAULT_LOG_FILE)))
+    log_file = _get_log_file()
     if not log_file.is_absolute():
         log_file = Path.cwd() / log_file
     log_file.parent.mkdir(parents=True, exist_ok=True)

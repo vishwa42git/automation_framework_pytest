@@ -4,7 +4,7 @@ import os
 
 @dataclass(frozen=True)
 class Settings:
-    base_url: str = "https://example.test"
+    base_url: str = "https://jsonplaceholder.typicode.com"
     timeout: float = 10.0
 
     @classmethod
